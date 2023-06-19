@@ -194,7 +194,6 @@ RegisterNetEvent("m-Vineyard:Client:SellWine", function()
                 disableMouse = false,
                 disableCombat = true,
             }, {}, {}, {}, function()
-                Notify(Config.Language["SellingSuccess"], 'success', 5000)
                 TriggerEvent('animations:client:EmoteCommandStart', {"c"})
                 TriggerServerEvent("m-Vineyard:Server:SellWine")
             end, function() -- Cancel

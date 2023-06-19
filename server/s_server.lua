@@ -58,27 +58,36 @@ QBCore.Functions.CreateCallback('m-Vineyard:Server:HaveWine', function(source, c
         local montante = Player.Functions.GetItemByName("redwine").amount
         if montante >= 1 then
             cb(true)
-            Player.Functions.RemoveItem("redwine", montante)
-            TriggerClientEvent("inventory:client:ItemBox", QBCore.Shared.Items["redwine"], "remove", montante)
         end
     elseif Player.Functions.GetItemByName("rosewine") then
         local montante = Player.Functions.GetItemByName("rosewine").amount
         if montante >= 1 then
             cb(true)
-            Player.Functions.RemoveItem("rosewine", montante)
-            TriggerClientEvent("inventory:client:ItemBox", QBCore.Shared.Items["rosewine"], "remove", montante)
         end
     else
         cb(false)
     end
 end)
 
-RegisterNetEvent('m-Vineyard:Server:SellWine', function()
+local items = {"redwine", "rosewine"}
+
+RegisterNetEvent('m-Vineyard:Server:SellWine')
+AddEventHandler('m-Vineyard:Server:SellWine', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    local amount = math.random(Config.Payment.Amount.min,Config.Payment.Amount.max)
+    local payment = math.random(Config.Payment.Amount.min, Config.Payment.Amount.max)
+
     if Player then
-        Player.Functions.AddMoney(Config.Payment.Type, amount)
-        TriggerClientEvent('m-Vineyard:Client:Notify', src, "+"..amount..Config.Language["Currency"], 'success', 5000)
+        if Player.Functions.GetItemByName("redwine") then
+            amount = Player.Functions.GetItemByName("redwine").amount
+            Player.Functions.AddMoney(Config.Payment.Type, amount * payment)
+            Player.Functions.RemoveItem("redwine", amount)
+            TriggerClientEvent('m-Vineyard:Client:Notify', src, "+" .. amount * payment ..Config.Language["Currency"], 'success', 5000)
+        elseif Player.Functions.GetItemByName("rosewine") then
+            amount = Player.Functions.GetItemByName("rosewine").amount
+            Player.Functions.AddMoney(Config.Payment.Type, amount * payment)
+            Player.Functions.RemoveItem("rosewine", amount)
+            TriggerClientEvent('m-Vineyard:Client:Notify', src, "+" .. amount * payment ..Config.Language["Currency"], 'success', 5000)
+        end
     end
 end)
